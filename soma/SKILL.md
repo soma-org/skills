@@ -308,10 +308,16 @@ await client.commit_model(
 
 ### Step 7: Wait One Epoch
 
-The commit-reveal protocol requires one epoch between commit and reveal. This prevents front-running.
+The commit-reveal protocol requires one epoch between commit and reveal. This prevents front-running. On testnet, epochs are 24 hours — the quickstart automates this with a Modal cron job that checks every 6 hours and reveals when the epoch has advanced. On localnet, use `await client.advance_epoch()` to advance instantly.
 
 ```python
-await client.wait_for_next_epoch()
+# Localnet: advance instantly
+await client.advance_epoch()
+
+# Testnet: check if epoch advanced (don't use wait_for_next_epoch — it defaults to 120s timeout)
+epoch_info = await client.get_epoch()
+if epoch_info.epoch > commit_epoch:
+    # ready to reveal
 ```
 
 ### Step 8: Reveal
