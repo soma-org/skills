@@ -2,7 +2,7 @@
 name: soma
 description: Expert guide for participating in the SOMA network — a decentralized system that trains a foundation model through competition. Provides data submission workflows, model training pipelines, reward claiming, SDK code generation, CLI command guidance, and competitive strategy optimization. Use when user mentions "SOMA", "soma-sdk", "soma-models", "submit data to SOMA", "train a SOMA model", "SOMA targets", "SOMA rewards", "next-byte prediction network", "decentralized model training", or asks about earning SOMA tokens through data or model contributions. Do NOT use for general machine learning, PyTorch, or JAX questions unrelated to the SOMA network.
 license: Apache-2.0
-compatibility: Requires Python 3.10+ for soma-sdk, Python 3.13+ for quickstart. soma CLI installed via sup. GPU recommended for model training (H100) and scoring (24GB VRAM). Network access to SOMA testnet or localnet.
+compatibility: Requires Python 3.10+ for soma-sdk, Python 3.13+ for quickstart. soma CLI installed via sup. GPU recommended for model training (H100) and scoring (24GB VRAM). Network access to SOMA testnet or localnet. Requires env vars SOMA_SECRET_KEY (sensitive — Ed25519 signing key), HF_TOKEN (sensitive — HuggingFace access), S3_BUCKET, S3_ACCESS_KEY_ID (sensitive), S3_SECRET_ACCESS_KEY (sensitive), S3_ENDPOINT_URL, S3_PUBLIC_URL. All credentials stored in .env (gitignored) and pushed to Modal encrypted secret store. Use testnet keys only.
 metadata:
   author: soma-org
   version: 1.1.0
@@ -12,6 +12,8 @@ metadata:
 ---
 
 # SOMA Network
+
+> **Security & credentials**: This skill requires sensitive environment variables (`SOMA_SECRET_KEY`, `HF_TOKEN`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`) for on-chain signing, dataset access, and artifact storage. Credentials are stored in a local `.env` file (gitignored) and pushed to Modal's encrypted secret store — never committed to git. Submission data and encrypted model weights are uploaded with public-read ACLs as required by the SOMA protocol for validator audits. **Always use testnet keys** for development and automated pipelines. Scope S3 API tokens to a single bucket with minimal permissions.
 
 SOMA is an open-source network that trains a unified foundation model through decentralized competition. Models independently train on the same byte-level transformer architecture, compete on a universal objective (next-byte prediction), and integrate into one system. The best weights are rewarded with SOMA tokens.
 
