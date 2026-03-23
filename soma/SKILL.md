@@ -5,7 +5,7 @@ license: Apache-2.0
 compatibility: Requires Python 3.10+ for soma-sdk, Python 3.13+ for quickstart. soma CLI installed via sup. GPU recommended for model training (H100) and scoring (24GB VRAM). Network access to SOMA testnet or localnet.
 metadata:
   author: soma-org
-  version: 1.0.0
+  version: 1.1.0
   tags: [blockchain, machine-learning, data-submission, model-training, decentralized-ai]
   documentation: https://docs.soma.org
   repository: https://github.com/soma-org/soma
@@ -100,9 +100,9 @@ uv run modal run src/quickstart/submitter.py       # test run
 
 **You're now scoring data against open targets and earning SOMA.** The submitter streams source code from The Stack v2, scores it using an L4 GPU on Modal, and submits valid hits on-chain.
 
-Deploy as a cron job to run continuously:
+Deploy and start immediately (also sets up a 24h cron schedule):
 ```bash
-uv run modal deploy src/quickstart/submitter.py
+uv run modal deploy src/quickstart/submitter.py && uv run submit
 ```
 
 ### What's Next?
@@ -357,6 +357,20 @@ soma target claim --target-id <ID>
 **Reward split**: 50% to data submitter, 50% to winning model owner.
 **Finder's fee**: Anyone can claim unclaimed rewards for 0.5% — claim yours promptly.
 **Auto-staking**: Model commission rewards are automatically re-staked.
+
+### Merge coins after claiming
+
+Each claim creates a separate coin in the wallet. Many small coins cause `InsufficientBond` or gas payment errors because the network needs a single coin large enough for the bond/gas. Merge periodically:
+
+```python
+await client.merge_coins(signer=kp)  # merges up to 256 coins per call
+```
+
+```bash
+soma merge-coins
+```
+
+Run multiple times if the wallet has more than 256 coins. The quickstart submitter calls `merge_coins` before each submission to prevent bond errors.
 
 ## Key Concepts
 
